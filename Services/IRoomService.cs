@@ -9,7 +9,7 @@ public interface IRoomService
     Task AddRoom(Room room);
     Task<Room> GetRoom(long roomId);
     Task<List<Room>> GetAllRooms();
-    Task UpdateRoom(Room room);
-    Task DeleteRoom(long id);
+    Task<bool> UpdateRoom(long id, Room room);
+    Task<bool> DeleteRoom(long id);
     Task<List<Room>> GetRoomsForRatOwners();
 }

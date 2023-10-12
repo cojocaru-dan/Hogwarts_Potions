@@ -9,8 +9,8 @@ namespace HogwartsPotions.Models
     public class HogwartsContext : DbContext
     {
 
-        public HogwartsContext(DbContextOptions<HogwartsContext> options) : base(options)
-        {
-        }
+        public HogwartsContext(DbContextOptions<HogwartsContext> options) : base(options) {}
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Room> Rooms { get; set; }
     }
 }
