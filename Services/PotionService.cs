@@ -23,6 +23,18 @@ namespace HogwartsPotions.Services
             var allPotions = await _context.Potions.ToListAsync();
             return allPotions;
         }
+        public async Task<List<Potion>> GetAllPotionsIncludingStudents()
+        {
+            var allPotionsIncludingStudents = await _context.Potions.Include(p => p.Student).ToListAsync();
+            return allPotionsIncludingStudents;
+        }
+
+        public void UpdatePotion(long potion_id, Potion dbPotionById)
+        {
+            var dbPotionToUpdate = _context.Potions.Where(p => p.ID == potion_id).FirstOrDefault();
+            dbPotionToUpdate.Ingredients = dbPotionById.Ingredients;
+            _context.SaveChanges();
+        }
 
         public async Task AddPotion(Potion potion)
         {
@@ -41,16 +53,16 @@ namespace HogwartsPotions.Services
                     if (commonIngredients == 5) brewingStatus = "replica";
                 }
                 if (brewingStatus != "replica") brewingStatus = "discovery";
-            var newPotion = new Potion 
-            { 
-                Name = potion.Name, 
-                Student = potion.Student,
-                Ingredients = potion.Ingredients,
-                BrewingStatus = brewingStatus,
-                Recipe = potion.Recipe
-            };
-            await _context.Potions.AddAsync(newPotion);
-            await _context.SaveChangesAsync();
+                var newPotion = new Potion 
+                { 
+                    Name = potion.Name, 
+                    Student = potion.Student,
+                    Ingredients = potion.Ingredients,
+                    BrewingStatus = brewingStatus,
+                    Recipe = potion.Recipe
+                };
+                await _context.Potions.AddAsync(newPotion);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -63,6 +75,21 @@ namespace HogwartsPotions.Services
                 if (dbPotion.Student.ID == student_id) studentPotions.Add(dbPotion);
             }
             return studentPotions;
+        }
+
+        public async Task AddPotionInPreparing(Potion potionInPreparing)
+        {
+            await _context.Potions.AddAsync(potionInPreparing);
+            await _context.SaveChangesAsync();
+        }
+
+        public Potion GetPotion(long potion_id)
+        {
+            var potionById = _context.Potions
+                                .Include(p => p.Ingredients)
+                                .ToList()
+                                .FirstOrDefault(potion => potion.ID == potion_id);
+            return potionById;
         }
     }
 }
